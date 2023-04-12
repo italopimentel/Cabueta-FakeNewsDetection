@@ -1,11 +1,12 @@
 imblearn
-sklearn
+scikit-learn
 pandas
 xgboost
 numpy
 textblob
 keras
-pickle
+pickle-mixin
 nltk
-string
-os
+tensorflow
+pyarabic
+tashaphyne
