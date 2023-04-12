@@ -7,8 +7,13 @@ from keras.preprocessing import text, sequence
 from keras import layers, models, optimizers
 import pickle 
 import numpy
+
+import os
+
+root_path = os.getcwd()
+
 # load the dataset
-data = open('ManualAnnotatedFakeNewsDataset.txt').read()
+data = open(root_path + "\\Datasets\\ManualAnnotatedFakeNewsDataset.txt", encoding='utf-8').read()
 #data = open('AutomaticAnnotatedFakeNewsDataset.txt').read()
 labels, texts = [], []
 for i, line in enumerate(data.split("\n")):
@@ -17,14 +22,14 @@ for i, line in enumerate(data.split("\n")):
     texts.append(" ".join(content[1:]))
 #stemming
 data1 = []
-from nltk import word_tokenize
+import nltk
 
-from nltk.stem.isri import ISRIStemmer
+nltk.download('punkt')
 
-st = ISRIStemmer()
+st = nltk.ISRIStemmer()
 for tx in texts:
     tweet = ""
-    for a in word_tokenize(tx):
+    for a in nltk.word_tokenize(tx):
         tweet = tweet + st.stem(a)+ " "
     data1.append(tweet.strip())
 
@@ -38,7 +43,7 @@ from tashaphyne.stemming import ArabicLightStemmer
 ArListem = ArabicLightStemmer()
 for tx in texts:
     tweet = ""
-    for a in word_tokenize(tx):
+    for a in nltk.word_tokenize(tx):
         stem = ArListem.light_stem(a)
         #tweet = tweet + ArListem.get_stem()+ " "
         tweet = tweet + ArListem.get_root()+ " "
@@ -95,7 +100,7 @@ def train_model(classifier, feature_vector_train, label, feature_vector_valid, m
         #print(x)
     if is_neural_net:
         predictions = predictions.argmax(axis=-1)
-    f = open('FakeNews/results.txt', 'a+')
+    f = open(root_path + '//FakeNews//results.txt', 'a+')
     #return metrics.accuracy_score(predictions, valid_y)
     print(metrics.precision_score(predictions, valid_y, average='weighted'))
     f.write(str(metrics.precision_score(predictions, valid_y, average='weighted'))+"\t")
@@ -106,22 +111,22 @@ def train_model(classifier, feature_vector_train, label, feature_vector_valid, m
     return metrics.f1_score(predictions, valid_y, average='weighted')
 
 # Naive Bayes on Count Vectors
-NBmodelname = "FakeNews/10CountVectors_NB_Model"
+NBmodelname = root_path + "//FakeNews//10CountVectors_NB_Model"
 accuracy = train_model(naive_bayes.MultinomialNB(), xtrain_count, train_y, xvalid_count,NBmodelname)
 print ("NB, Count Vectors: ", accuracy)
 
 # Naive Bayes on Word Level TF IDF Vectors
-NBmodelname = "FakeNews/11WordLevel_NB_Model"
+NBmodelname = root_path + "//FakeNews//11WordLevel_NB_Model"
 accuracy = train_model(naive_bayes.MultinomialNB(), xtrain_tfidf, train_y, xvalid_tfidf,NBmodelname)
 print ("NB, WordLevel TF-IDF: ", accuracy)
 
 # Naive Bayes on Ngram Level TF IDF Vectors
-NBmodelname = "FakeNews/12N-GramVectors_NB_Model"
+NBmodelname = root_path + "//FakeNews//12N-GramVectors_NB_Model"
 accuracy = train_model(naive_bayes.MultinomialNB(), xtrain_tfidf_ngram, train_y, xvalid_tfidf_ngram,NBmodelname)
 print ("NB, N-Gram Vectors: ", accuracy)
 
 # Naive Bayes on Character Level TF IDF Vectors
-NBmodelname = "FakeNews/13CharLevelVectors_NB_Model"
+NBmodelname = root_path + "//FakeNews//13CharLevelVectors_NB_Model"
 accuracy = train_model(naive_bayes.MultinomialNB(), xtrain_tfidf_ngram_chars, train_y, xvalid_tfidf_ngram_chars,NBmodelname)
 print ("NB, CharLevel Vectors: ", accuracy)
 

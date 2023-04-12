@@ -6,8 +6,11 @@ import pandas, xgboost, numpy, textblob, string
 from keras.preprocessing import text, sequence
 from keras import layers, models, optimizers
 import pickle 
+import os
+
+root_path = os.getcwd()
 # load the dataset
-data = open('ManualAnnotatedFakeNewsDataset.txt').read()
+data = open(root_path + "\\Datasets\\ManualAnnotatedFakeNewsDataset.txt", encoding='utf-8').read()
 #data = open('AutomaticAnnotatedFakeNewsDataset.txt').read()
 labels, texts = [], []
 for i, line in enumerate(data.split("\n")):
@@ -16,14 +19,14 @@ for i, line in enumerate(data.split("\n")):
     texts.append(" ".join(content[1:]))
 #stemming
 data1 = []
-from nltk import word_tokenize
+import nltk
 
-from nltk.stem.isri import ISRIStemmer
+nltk.download('punkt')
 
-st = ISRIStemmer()
+st = nltk.ISRIStemmer()
 for tx in texts:
     tweet = ""
-    for a in word_tokenize(tx):
+    for a in nltk.word_tokenize(tx):
         tweet = tweet + st.stem(a)+ " "
     data1.append(tweet.strip())
 
@@ -37,7 +40,7 @@ from tashaphyne.stemming import ArabicLightStemmer
 ArListem = ArabicLightStemmer()
 for tx in texts:
     tweet = ""
-    for a in word_tokenize(tx):
+    for a in nltk.word_tokenize(tx):
         stem = ArListem.light_stem(a)
         #tweet = tweet + ArListem.get_stem()+ " "
         tweet = tweet + ArListem.get_root()+ " "
@@ -51,9 +54,6 @@ trainDF['class'] = labels
 
 # split the dataset into training and validation datasets 
 train_x, valid_x, train_y, valid_y = model_selection.train_test_split(trainDF['tweet'], trainDF['class'],test_size = 0.2)
-
-
-
 
 # create a count vectorizer object 
 count_vect = CountVectorizer(analyzer='word', token_pattern=r'\w{1,}')
@@ -100,23 +100,23 @@ def train_model(classifier, feature_vector_train, label, feature_vector_valid, m
 from sklearn.neural_network import MLPClassifier
 
 # MLPClassifier on Count Vectors
-MLPmodelname = "FakeNews/50CountVectors_MLP_Model"
+MLPmodelname = root_path + "//FakeNews//50CountVectors_MLP_Model"
 MLP = MLPClassifier(hidden_layer_sizes=(8,8,8), activation='relu', solver='adam', max_iter=500)
 accuracy = train_model(MLP, xtrain_count, train_y, xvalid_count,MLPmodelname)
 print ("MLP, Count Vectors: ", accuracy)
 
 # MLPClassifier on Word Level TF IDF Vectors
-MLPmodelname = "FakeNews/51WordLevel_MLP_Model"
+MLPmodelname = root_path + "//FakeNews//51WordLevel_MLP_Model"
 accuracy = train_model(MLP, xtrain_tfidf, train_y, xvalid_tfidf,MLPmodelname)
 print ("MLP, WordLevel TF-IDF: ", accuracy)
 
 # MLPClassifier on Ngram Level TF IDF Vectors
-MLPmodelname = "FakeNews/52N-GramVectors_MLP_Model"
+MLPmodelname = root_path + "//FakeNews//52N-GramVectors_MLP_Model"
 accuracy = train_model(MLP, xtrain_tfidf_ngram, train_y, xvalid_tfidf_ngram,MLPmodelname)
 print ("MLP, N-Gram Vectors: ", accuracy)
 
 # MLPClassifier on Character Level TF IDF Vectors
-MLPmodelname = "FakeNews/53CharLevelVectors_MLP_Model"
+MLPmodelname = root_path + "//FakeNews//53CharLevelVectors_MLP_Model"
 accuracy = train_model(MLP, xtrain_tfidf_ngram_chars, train_y, xvalid_tfidf_ngram_chars,MLPmodelname)
 print ("MLP, CharLevel Vectors: ", accuracy)
 

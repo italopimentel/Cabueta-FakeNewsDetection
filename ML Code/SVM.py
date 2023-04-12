@@ -8,8 +8,11 @@ import pandas, xgboost, numpy, textblob, string
 from keras.preprocessing import text, sequence
 from keras import layers, models, optimizers
 import pickle 
+import os
+
+root_path = os.getcwd()
 # load the dataset
-data = open('ManualAnnotatedFakeNewsDataset.txt').read()
+data = open(root_path + "\\Datasets\\ManualAnnotatedFakeNewsDataset.txt", encoding='utf-8').read()
 #data = open('AutomaticAnnotatedFakeNewsDataset.txt').read()
 labels, texts = [], []
 for i, line in enumerate(data.split("\n")):
@@ -18,14 +21,15 @@ for i, line in enumerate(data.split("\n")):
     texts.append(" ".join(content[1:]))
 #stemming
 data1 = []
-from nltk import word_tokenize
+import nltk
 
-from nltk.stem.isri import ISRIStemmer
+nltk.download('punkt')
+nltk.download('stopwords')
 
-st = ISRIStemmer()
+st = nltk.ISRIStemmer()
 for tx in texts:
     tweet = ""
-    for a in word_tokenize(tx):
+    for a in nltk.word_tokenize(tx):
         tweet = tweet + st.stem(a)+ " "
     data1.append(tweet.strip())
 
@@ -39,7 +43,7 @@ from tashaphyne.stemming import ArabicLightStemmer
 ArListem = ArabicLightStemmer()
 for tx in texts:
     tweet = ""
-    for a in word_tokenize(tx):
+    for a in nltk.word_tokenize(tx):
         stem = ArListem.light_stem(a)
         tweet = tweet + ArListem.get_stem()+ " "
         #tweet = tweet + ArListem.get_root()+ " "
@@ -55,8 +59,6 @@ trainDF['class'] = labels
 
 # split the dataset into training and validation datasets 
 train_x, valid_x, train_y, valid_y = model_selection.train_test_split(trainDF['tweet'], trainDF['class'],test_size = 0.2)
-
-
 
 
 from nltk.corpus import stopwords
@@ -100,7 +102,7 @@ def train_model(classifier, feature_vector_train, label, feature_vector_valid, m
     #print(scores)
     if is_neural_net:
         predictions = predictions.argmax(axis=-1)
-    f = open('FakeNews/results.txt', 'a+')
+    f = open(root_path + '//FakeNews//results.txt', 'a+')
     print(metrics.precision_score(predictions, valid_y, average='weighted'))
     f.write(str(metrics.precision_score(predictions, valid_y, average='weighted'))+"\t")
     print(metrics.recall_score(predictions, valid_y, average='weighted'))
@@ -112,23 +114,23 @@ def train_model(classifier, feature_vector_train, label, feature_vector_valid, m
 
 
 SVM = svm.SVC(C=1.0, kernel='linear', degree=3, gamma='auto')
-SVMmodelname = "FakeNews/30CountVectors_SVM_Model"
+SVMmodelname = root_path + "//FakeNews//30CountVectors_SVM_Model"
 # SVM Classifier on Count Vectors
 clf = svm.SVC(kernel='linear')
 accuracy = train_model(clf, xtrain_count, train_y, xvalid_count,SVMmodelname)
 print ("SVM, Count Vectors: ", accuracy)
 
-SVMmodelname = "FakeNews/31WordLevel_SVM_Model"
+SVMmodelname = root_path + "//FakeNews//31WordLevel_SVM_Model"
 # SVM Classifier on Word Level TF IDF Vectors
 accuracy = train_model(clf, xtrain_tfidf, train_y, xvalid_tfidf,SVMmodelname)
 print ("SVM, WordLevel TF-IDF: ", accuracy)
 
-SVMmodelname = "FakeNews/32N-GramVectors_SVM_Model"
+SVMmodelname = root_path + "//FakeNews//32N-GramVectors_SVM_Model"
 # SVM Classifier on Ngram Level TF IDF Vectors
 accuracy = train_model(clf, xtrain_tfidf_ngram, train_y, xvalid_tfidf_ngram,SVMmodelname)
 print ("SVM, N-Gram Vectors: ", accuracy)
 
-SVMmodelname = "FakeNews/33CharLevelVectors_SVM_Model"
+SVMmodelname = root_path + "//FakeNews//33CharLevelVectors_SVM_Model"
 # SVM Classifier on Character Level TF IDF Vectors
 accuracy = train_model(clf, xtrain_tfidf_ngram_chars, train_y, xvalid_tfidf_ngram_chars,SVMmodelname)
 print ("SVM, CharLevel Vectors: ", accuracy)

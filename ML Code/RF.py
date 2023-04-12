@@ -7,8 +7,12 @@ import pandas, xgboost, numpy, textblob, string
 from keras.preprocessing import text, sequence
 from keras import layers, models, optimizers
 import pickle 
+import os
+
+root_path = os.getcwd()
+
 # load the dataset
-data = open('ManualAnnotatedFakeNewsDataset.txt').read()
+data = open(root_path + "\\Datasets\\ManualAnnotatedFakeNewsDataset.txt", encoding='utf-8').read()
 #data = open('AutomaticAnnotatedFakeNewsDataset.txt').read()
 labels, texts = [], []
 for i, line in enumerate(data.split("\n")):
@@ -23,9 +27,6 @@ trainDF['class'] = labels
 
 # split the dataset into training and validation datasets 
 train_x, valid_x, train_y, valid_y = model_selection.train_test_split(trainDF['tweet'], trainDF['class'])
-
-
-
 
 # create a count vectorizer object 
 count_vect = CountVectorizer(analyzer='word', token_pattern=r'\w{1,}')
@@ -71,12 +72,12 @@ def train_model(classifier, feature_vector_train, label, feature_vector_valid, m
 
 
 # RF on Count Vectors
-RFmodelname = "40CountVectors_RF_Model"
+RFmodelname = root_path + "//FakeNews//40CountVectors_RF_Model"
 accuracy = train_model(RandomForestRegressor(n_estimators=20, random_state=0), xtrain_count, train_y, xvalid_count,RFmodelname)
 print ("RF, Count Vectors: ", accuracy)
 
 # RF on Word Level TF IDF Vectors
-RFmodelname = "41WordLevel_RF_Model"
+RFmodelname = root_path + "//FakeNews//41WordLevel_RF_Model"
 accuracy = train_model(RandomForestRegressor(n_estimators=20, random_state=0), xtrain_tfidf, train_y, xvalid_tfidf,RFmodelname)
 print ("RF, WordLevel TF-IDF: ", accuracy)
 
