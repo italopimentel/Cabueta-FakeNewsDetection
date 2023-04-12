@@ -9,8 +9,11 @@ import pandas, xgboost, numpy, textblob, string
 from keras.preprocessing import text, sequence
 from keras import layers, models, optimizers
 import pickle 
+import os
+
+root_path = os.getcwd()
 # load the dataset
-data = open('ManualAnnotatedFakeNewsDataset.txt').read()
+data = open(root_path + "\\Datasets\\ManualAnnotatedFakeNewsDataset.txt", encoding='utf-8').read()
 #data = open('AutomaticAnnotatedFakeNewsDataset.txt').read()
 labels, texts = [], []
 for i, line in enumerate(data.split("\n")):
@@ -19,14 +22,14 @@ for i, line in enumerate(data.split("\n")):
     texts.append(" ".join(content[1:]))
 #stemming
 data1 = []
-from nltk import word_tokenize
+import nltk
 
-from nltk.stem.isri import ISRIStemmer
+nltk.download('punkt')
 
-st = ISRIStemmer()
+st = nltk.ISRIStemmer()
 for tx in texts:
     tweet = ""
-    for a in word_tokenize(tx):
+    for a in nltk.word_tokenize(tx):
         tweet = tweet + st.stem(a)+ " "
     data1.append(tweet.strip())
 
@@ -40,7 +43,7 @@ from tashaphyne.stemming import ArabicLightStemmer
 ArListem = ArabicLightStemmer()
 for tx in texts:
     tweet = ""
-    for a in word_tokenize(tx):
+    for a in nltk.word_tokenize(tx):
         stem = ArListem.light_stem(a)
         #tweet = tweet + ArListem.get_stem()+ " "
         tweet = tweet + ArListem.get_root()+ " "
@@ -54,9 +57,6 @@ trainDF['class'] = labels
 
 # split the dataset into training and validation datasets 
 train_x, valid_x, train_y, valid_y = model_selection.train_test_split(trainDF['tweet'], trainDF['class'],test_size = 0.2)
-
-
-
 
 # create a count vectorizer object 
 count_vect = CountVectorizer(analyzer='word', token_pattern=r'\w{1,}')
@@ -95,7 +95,7 @@ def train_model(classifier, feature_vector_train, label, feature_vector_valid, m
     #print(scores)
     if is_neural_net:
         predictions = predictions.argmax(axis=-1)
-    f = open('FakeNews/results.txt', 'a+')
+    f = open(root_path + "\\FakeNews\\results.txt", 'a+')
     #return metrics.accuracy_score(predictions, valid_y)
     print(metrics.precision_score(predictions, valid_y, average='weighted'))
     f.write(str(metrics.precision_score(predictions, valid_y, average='weighted'))+"\t")
@@ -105,22 +105,22 @@ def train_model(classifier, feature_vector_train, label, feature_vector_valid, m
     f.close()
     return metrics.f1_score(predictions, valid_y, average='weighted')
 
-LRmodelname = "FakeNews/20CountVectors_LR_Model"
+LRmodelname = root_path + "\\FakeNews\\20CountVectors_LR_Model"
 # Linear Classifier on Count Vectors
 accuracy = train_model(linear_model.LogisticRegression(), xtrain_count, train_y, xvalid_count,LRmodelname)
 print ("LR, Count Vectors: ", accuracy)
 
-LRmodelname = "FakeNews/21WordLevel_LR_Model"
+LRmodelname = root_path + "\\FakeNews\\21WordLevel_LR_Model"
 # Linear Classifier on Word Level TF IDF Vectors
 accuracy = train_model(linear_model.LogisticRegression(), xtrain_tfidf, train_y, xvalid_tfidf,LRmodelname)
 print ("LR, WordLevel TF-IDF: ", accuracy)
 
-LRmodelname = "FakeNews/22N-GramVectors_LR_Model"
+LRmodelname = root_path + "\\FakeNews\\22N-GramVectors_LR_Model"
 # Linear Classifier on Ngram Level TF IDF Vectors
 accuracy = train_model(linear_model.LogisticRegression(), xtrain_tfidf_ngram, train_y, xvalid_tfidf_ngram,LRmodelname)
 print ("LR, N-Gram Vectors: ", accuracy)
 
-LRmodelname = "FakeNews/23CharLevelVectors_LR_Model"
+LRmodelname = root_path + "\\FakeNews23CharLevelVectors_LR_Model"
 # Linear Classifier on Character Level TF IDF Vectors
 accuracy = train_model(linear_model.LogisticRegression(), xtrain_tfidf_ngram_chars, train_y, xvalid_tfidf_ngram_chars,LRmodelname)
 print ("LR, CharLevel Vectors: ", accuracy)
