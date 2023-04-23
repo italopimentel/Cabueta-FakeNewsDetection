@@ -15,10 +15,10 @@ root_path = os.getcwd()
 print(root_path)
 # load the dataset
 try:
-    data = open(root_path + "\\Datasets\\ManualAnnotatedFakeNewsDataset.txt", encoding='utf-8').read()
+    data = open(root_path + "\\Corpus\\normalizedData.txt", encoding='utf-8').read()
 except FileNotFoundError:
     root_path = root_path + "\\Cabueta-FakeNewsDetection"
-    data = open(root_path + "\\Datasets\\ManualAnnotatedFakeNewsDataset.txt", encoding='utf-8').read()
+    data = open(root_path + "\\Corpus\\normalizedData.txt", encoding='utf-8').read()
 
 #data = open('AutomaticAnnotatedFakeNewsDataset.txt').read()
 labels, texts = [], []
@@ -38,7 +38,6 @@ for tx in texts:
     for a in nltk.word_tokenize(tx):
         tweet = tweet + st.stem(a)+ " "
     data1.append(tweet.strip())
-    print(tweet)
 
 
 # create a dataframe using texts and lables
