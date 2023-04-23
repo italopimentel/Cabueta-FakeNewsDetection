@@ -14,10 +14,10 @@ root_path = os.getcwd()
 
 # load the dataset
 try:
-    data = open(root_path + "\\Datasets\\ManualAnnotatedFakeNewsDataset.txt", encoding='utf-8').read()
+    data = open(root_path + "\\Corpus\\normalizedData.txt", encoding='utf-8').read()
 except FileNotFoundError:
     root_path = root_path + "\\Cabueta-FakeNewsDetection"
-    data = open(root_path + "\\Datasets\\ManualAnnotatedFakeNewsDataset.txt", encoding='utf-8').read()
+    data = open(root_path + "\\Corpus\\normalizedData.txt", encoding='utf-8').read()
     
 labels, texts = [], []
 for i, line in enumerate(data.split("\n")):
@@ -38,21 +38,6 @@ for tx in texts:
     data1.append(tweet.strip())
 
 #print(data1[:10])
-#tashfeen
-data2 = []
-import pyarabic.arabrepr
-arepr = pyarabic.arabrepr.ArabicRepr()
-repr = arepr.repr
-from tashaphyne.stemming import ArabicLightStemmer
-ArListem = ArabicLightStemmer()
-for tx in texts:
-    tweet = ""
-    for a in nltk.word_tokenize(tx):
-        stem = ArListem.light_stem(a)
-        #tweet = tweet + ArListem.get_stem()+ " "
-        tweet = tweet + ArListem.get_root()+ " "
-    data2.append(tweet.strip())
-#print(data2[:10])
 
 # create a dataframe using texts and lables
 trainDF = pandas.DataFrame()
@@ -61,9 +46,6 @@ trainDF['class'] = labels
 
 # split the dataset into training and validation datasets 
 train_x, valid_x, train_y, valid_y = model_selection.train_test_split(trainDF['tweet'], trainDF['class'],test_size = 0.2)
-
-
-
 
 # create a count vectorizer object 
 count_vect = CountVectorizer(analyzer='word', token_pattern=r'\w{1,}')
