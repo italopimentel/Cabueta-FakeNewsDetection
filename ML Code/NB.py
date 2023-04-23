@@ -13,8 +13,12 @@ import os
 root_path = os.getcwd()
 
 # load the dataset
-data = open(root_path + "\\Datasets\\ManualAnnotatedFakeNewsDataset.txt", encoding='utf-8').read()
-#data = open('AutomaticAnnotatedFakeNewsDataset.txt').read()
+try:
+    data = open(root_path + "\\Datasets\\ManualAnnotatedFakeNewsDataset.txt", encoding='utf-8').read()
+except FileNotFoundError:
+    root_path = root_path + "\\Cabueta-FakeNewsDetection"
+    data = open(root_path + "\\Datasets\\ManualAnnotatedFakeNewsDataset.txt", encoding='utf-8').read()
+    
 labels, texts = [], []
 for i, line in enumerate(data.split("\n")):
     content = line.split("\t")
