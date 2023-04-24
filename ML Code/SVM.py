@@ -15,7 +15,7 @@ root_path = os.getcwd()
 try:
     data = open(root_path + "\\Corpus\\normalizedData.txt", encoding='utf-8').read()
 except FileNotFoundError:
-    root_path = root_path + "\\Cabueta-FakeNewsDetection"
+    root_path = root_path + "\\Cabueta-TrainedModelsDetection"
     data = open(root_path + "\\Corpus\\normalizedData.txt", encoding='utf-8').read()
 
 labels, texts = [], []
@@ -89,7 +89,7 @@ def train_model(classifier, feature_vector_train, label, feature_vector_valid, m
     #print(scores)
     if is_neural_net:
         predictions = predictions.argmax(axis=-1)
-    f = open(root_path + '//FakeNews//results.txt', 'a+')
+    f = open(root_path + '//TrainedModels//results.txt', 'a+')
     print(metrics.precision_score(predictions, valid_y, average='weighted'))
     f.write(str(metrics.precision_score(predictions, valid_y, average='weighted'))+"\t")
     print(metrics.recall_score(predictions, valid_y, average='weighted'))
@@ -101,23 +101,23 @@ def train_model(classifier, feature_vector_train, label, feature_vector_valid, m
 
 
 SVM = svm.SVC(C=1.0, kernel='linear', degree=3, gamma='auto')
-SVMmodelname = root_path + "//FakeNews//30CountVectors_SVM_Model"
+SVMmodelname = root_path + "//TrainedModels//30CountVectors_SVM_Model.pkl"
 # SVM Classifier on Count Vectors
 clf = svm.SVC(kernel='linear')
 accuracy = train_model(clf, xtrain_count, train_y, xvalid_count,SVMmodelname)
 print ("SVM, Count Vectors: ", accuracy)
 
-SVMmodelname = root_path + "//FakeNews//31WordLevel_SVM_Model"
+SVMmodelname = root_path + "//TrainedModels//31WordLevel_SVM_Model.pkl"
 # SVM Classifier on Word Level TF IDF Vectors
 accuracy = train_model(clf, xtrain_tfidf, train_y, xvalid_tfidf,SVMmodelname)
 print ("SVM, WordLevel TF-IDF: ", accuracy)
 
-SVMmodelname = root_path + "//FakeNews//32N-GramVectors_SVM_Model"
+SVMmodelname = root_path + "//TrainedModels//32N-GramVectors_SVM_Model.pkl"
 # SVM Classifier on Ngram Level TF IDF Vectors
 accuracy = train_model(clf, xtrain_tfidf_ngram, train_y, xvalid_tfidf_ngram,SVMmodelname)
 print ("SVM, N-Gram Vectors: ", accuracy)
 
-SVMmodelname = root_path + "//FakeNews//33CharLevelVectors_SVM_Model"
+SVMmodelname = root_path + "//TrainedModels//33CharLevelVectors_SVM_Model.pkl"
 # SVM Classifier on Character Level TF IDF Vectors
 accuracy = train_model(clf, xtrain_tfidf_ngram_chars, train_y, xvalid_tfidf_ngram_chars,SVMmodelname)
 print ("SVM, CharLevel Vectors: ", accuracy)

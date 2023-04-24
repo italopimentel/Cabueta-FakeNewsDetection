@@ -17,10 +17,10 @@ print(root_path)
 try:
     data = open(root_path + "\\Corpus\\normalizedData.txt", encoding='utf-8').read()
 except FileNotFoundError:
-    root_path = root_path + "\\Cabueta-FakeNewsDetection"
+    root_path = root_path + "\\Cabueta-TrainedModelsDetection"
     data = open(root_path + "\\Corpus\\normalizedData.txt", encoding='utf-8').read()
 
-#data = open('AutomaticAnnotatedFakeNewsDataset.txt').read()
+#data = open('AutomaticAnnotatedTrainedModelsDataset.txt').read()
 labels, texts = [], []
 for i, line in enumerate(data.split("\n")):
     content = line.split("\t")
@@ -85,7 +85,7 @@ def train_model(classifier, feature_vector_train, label, feature_vector_valid, m
     #print(scores)
     if is_neural_net:
         predictions = predictions.argmax(axis=-1)
-    f = open(root_path + "\\FakeNews\\results.txt", 'a+')
+    f = open(root_path + "\\TrainedModels\\results.txt", 'a+')
     #return metrics.accuracy_score(predictions, valid_y)
     print(metrics.precision_score(predictions, valid_y, average='weighted'))
     f.write(str(metrics.precision_score(predictions, valid_y, average='weighted'))+"\t")
@@ -95,22 +95,22 @@ def train_model(classifier, feature_vector_train, label, feature_vector_valid, m
     f.close()
     return metrics.f1_score(predictions, valid_y, average='weighted')
 
-LRmodelname = root_path + "\\FakeNews\\20CountVectors_LR_Model"
+LRmodelname = root_path + "\\TrainedModels\\20CountVectors_LR_Model.pkl"
 # Linear Classifier on Count Vectors
 accuracy = train_model(linear_model.LogisticRegression(), xtrain_count, train_y, xvalid_count,LRmodelname)
 print ("LR, Count Vectors: ", accuracy)
 
-LRmodelname = root_path + "\\FakeNews\\21WordLevel_LR_Model"
+LRmodelname = root_path + "\\TrainedModels\\21WordLevel_LR_Model.pkl"
 # Linear Classifier on Word Level TF IDF Vectors
 accuracy = train_model(linear_model.LogisticRegression(), xtrain_tfidf, train_y, xvalid_tfidf,LRmodelname)
 print ("LR, WordLevel TF-IDF: ", accuracy)
 
-LRmodelname = root_path + "\\FakeNews\\22N-GramVectors_LR_Model"
+LRmodelname = root_path + "\\TrainedModels\\22N-GramVectors_LR_Model.pkl"
 # Linear Classifier on Ngram Level TF IDF Vectors
 accuracy = train_model(linear_model.LogisticRegression(), xtrain_tfidf_ngram, train_y, xvalid_tfidf_ngram,LRmodelname)
 print ("LR, N-Gram Vectors: ", accuracy)
 
-LRmodelname = root_path + "\\FakeNews23CharLevelVectors_LR_Model"
+LRmodelname = root_path + "\\TrainedModels\\23CharLevelVectors_LR_Model.pkl"
 # Linear Classifier on Character Level TF IDF Vectors
 accuracy = train_model(linear_model.LogisticRegression(), xtrain_tfidf_ngram_chars, train_y, xvalid_tfidf_ngram_chars,LRmodelname)
 print ("LR, CharLevel Vectors: ", accuracy)

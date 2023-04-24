@@ -13,7 +13,7 @@ root_path = os.getcwd()
 try:
     data = open(root_path + "\\Corpus\\normalizedData.txt", encoding='utf-8').read()
 except FileNotFoundError:
-    root_path = root_path + "\\Cabueta-FakeNewsDetection"
+    root_path = root_path + "\\Cabueta-TrainedModelsDetection"
     data = open(root_path + "\\Corpus\\normalizedData.txt", encoding='utf-8').read()
     
 labels, texts = [], []
@@ -89,23 +89,23 @@ def train_model(classifier, feature_vector_train, label, feature_vector_valid, m
 from sklearn.neural_network import MLPClassifier
 
 # MLPClassifier on Count Vectors
-MLPmodelname = root_path + "//FakeNews//50CountVectors_MLP_Model"
+MLPmodelname = root_path + "//TrainedModels//50CountVectors_MLP_Model.pkl"
 MLP = MLPClassifier(hidden_layer_sizes=(8,8,8), activation='relu', solver='adam', max_iter=500)
 accuracy = train_model(MLP, xtrain_count, train_y, xvalid_count,MLPmodelname)
 print ("MLP, Count Vectors: ", accuracy)
 
 # MLPClassifier on Word Level TF IDF Vectors
-MLPmodelname = root_path + "//FakeNews//51WordLevel_MLP_Model"
+MLPmodelname = root_path + "//TrainedModels//51WordLevel_MLP_Model.pkl"
 accuracy = train_model(MLP, xtrain_tfidf, train_y, xvalid_tfidf,MLPmodelname)
 print ("MLP, WordLevel TF-IDF: ", accuracy)
 
 # MLPClassifier on Ngram Level TF IDF Vectors
-MLPmodelname = root_path + "//FakeNews//52N-GramVectors_MLP_Model"
+MLPmodelname = root_path + "//TrainedModels//52N-GramVectors_MLP_Model.pkl"
 accuracy = train_model(MLP, xtrain_tfidf_ngram, train_y, xvalid_tfidf_ngram,MLPmodelname)
 print ("MLP, N-Gram Vectors: ", accuracy)
 
 # MLPClassifier on Character Level TF IDF Vectors
-MLPmodelname = root_path + "//FakeNews//53CharLevelVectors_MLP_Model"
+MLPmodelname = root_path + "//TrainedModels//53CharLevelVectors_MLP_Model.pkl"
 accuracy = train_model(MLP, xtrain_tfidf_ngram_chars, train_y, xvalid_tfidf_ngram_chars,MLPmodelname)
 print ("MLP, CharLevel Vectors: ", accuracy)
 
